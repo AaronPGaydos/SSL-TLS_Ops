@@ -1,4 +1,13 @@
-# SSL-TLS_Ops
+# 🔐 SSL-TLS_Ops with Certbot + Nginx
+
+## Overview
+
+This lab shows how to:
+- Deploy Let's Encrypt certs on Nginx
+- Simulate cert expiration and misconfig
+- Auto-renew with cron
+- Troubleshoot SSL issues like an SRE
+
 
 🧰 Tech Stack:
 
