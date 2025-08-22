@@ -57,3 +57,67 @@ curl -v https://localhost
 
 # 4. Remediation & Automation (Let's Encrypt)
 
+Buy a domain (Freenom or Namecheap)
+
+Point it to your VM (local test):
+
+sudo nano /etc/hosts
+
+Add:
+192.168.56.100   www.yourdomain.com
+
+Install Certbot
+
+#if not already created
+python3 -m venv /opt/certbot
+source /opt/certbot/bin/activate
+pip install --upgrade pip
+pip install certbot certbot-nginx
+
+symlink it for convenience
+sudo ln -s /opt/certbot/bin/certbot /usr/local/bin/certbot
+
+Run certbot with Nginx:
+
+sudo certbot --nginx -d www.yourdomain.com
+
+<img width="59" height="16" alt="image" src="https://github.com/user-attachments/assets/1e3dfada-48e5-47c4-a538-ede317a24d75" />
+
+<img width="564" height="162" alt="Screenshot 2025-08-22 171000" src="https://github.com/user-attachments/assets/0ed429d4-dfe6-42a1-9804-283026a7150a" />
+
+# 5. Monitoring, Alerting, & Hardening
+
+Dry-run renewal:
+sudo certbot renew --dry-run
+
+Cron Auto-Renew
+
+sudo crontab -e
+#Add:
+0 3 * * * certbot renew --quiet && systemctl reload nginx
+
+<img width="470" height="29" alt="image" src="https://github.com/user-attachments/assets/314b6252-5166-4996-bb3f-f241bd04b213" />
+
+# 7. Slack Test Summary
+
+```text
+🧨 Incident: HTTPS outage on www.aarondomain.com  
+🕒 Timeline:  
+- 02:00 PM – Pager alert triggered (TLS cert expired)  
+- 02:05 PM – Initial triage: Nginx failed reload, browser showing untrusted site  
+- 02:15 PM – RCA: Missing renewal automation, cert expired silently  
+- 02:30 PM – Mitigation: Issued new Let's Encrypt cert via `certbot --nginx`  
+- 02:45 PM – Verification: HTTPS restored, monitoring checks green  
+
+🔍 Root Cause:  
+Certbot not installed → no auto-renewal → cert expired undetected  
+
+🔧 Fix Implemented:  
+- Installed Certbot + Nginx plugin  
+- Configured cron-based auto-renew + dry-run validation  
+- Added custom SSL expiry monitoring script  
+
+🚀 Action Items:  
+- [ ] Add Slack alert when SSL cert <15 days to expire  
+- [ ] Integrate monitoring with Prometheus/Grafana  
+- [ ] Expand chaos tests to simulate DNS failures
