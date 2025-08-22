@@ -107,7 +107,7 @@ sudo crontab -e
 
 <img width="470" height="29" alt="image" src="https://github.com/user-attachments/assets/314b6252-5166-4996-bb3f-f241bd04b213" />
 
-# 7. Slack Test Summary
+# 6. Slack Test Summary
 
 ```text
 🧨 Incident: HTTPS outage on www.aarondomain.com  
