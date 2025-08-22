@@ -107,6 +107,22 @@ sudo crontab -e
 
 <img width="470" height="29" alt="image" src="https://github.com/user-attachments/assets/314b6252-5166-4996-bb3f-f241bd04b213" />
 
+Monitor Expiry Manually:
+
+Create /scripts/check_ssl_expiry.sh
+```
+#!/bin/bash
+DOMAIN="www.aarondomain.com"
+EXPIRY_DATE=$(echo | openssl s_client -servername $DOMAIN -connect $DOMAIN:443 2>/dev/null \
+  | openssl x509 -noout -enddate | cut -d= -f2)
+EXPIRY_SEC=$(date --date="$EXPIRY_DATE" +%s)
+NOW_SEC=$(date +%s)
+DAYS_LEFT=$(( ($EXPIRY_SEC - $NOW_SEC) / 86400 ))
+
+echo "SSL cert for $DOMAIN expires in $DAYS_LEFT days."
+[ "$DAYS_LEFT" -lt 15 ] && echo "⚠️ Renew soon!" || echo "✅ All good."
+```
+
 # 6. Slack Test Summary
 
 ```text
